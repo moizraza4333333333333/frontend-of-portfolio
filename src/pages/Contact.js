@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiPhone, FiMail, FiMapPin, FiSend } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
@@ -7,10 +7,10 @@ import './Contact.css';
 const API_BASE = 'https://moiz.pythonanywhere.com';
 
 const Contact = () => {
-    const [formData, setFormData] = React.useState({ name: '', email: '', message: '' });
-    const [sent, setSent] = React.useState(false);
-    const [loading, setLoading] = React.useState(false);
-    const [error, setError] = React.useState('');
+    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+    const [sent, setSent] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,27 +19,20 @@ const Contact = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError('');
-
+        setError(null);
         try {
             const res = await fetch(`${API_BASE}/api/contact`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
-
             const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.error || 'Failed to send message');
-            }
-
+            if (!res.ok) throw new Error(data.error || 'Something went wrong');
             setSent(true);
             setFormData({ name: '', email: '', message: '' });
             setTimeout(() => setSent(false), 3000);
         } catch (err) {
             setError(err.message);
-            setTimeout(() => setError(''), 4000);
         } finally {
             setLoading(false);
         }
@@ -134,9 +127,9 @@ const Contact = () => {
                                 required
                             />
                         </div>
-                        {error && <div className="form-error">{error}</div>}
+                        {error && <p className="form-error" style={{ color: '#ff6b6b', marginBottom: '1rem' }}>{error}</p>}
                         <button type="submit" className="btn btn-primary" disabled={loading}>
-                            {loading ? 'Sending...' : sent ? 'Message Sent!' : 'Send Message'} {!loading && <FiSend />}
+                            {loading ? 'Sending...' : sent ? 'Message Sent!' : 'Send Message'} <FiSend />
                         </button>
                     </motion.form>
                 </div>

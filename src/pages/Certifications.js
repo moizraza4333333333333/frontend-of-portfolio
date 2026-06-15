@@ -1,41 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaCertificate, FaAward } from 'react-icons/fa';
 import { SiMysql, SiShopify, SiPython } from 'react-icons/si';
 import './Certifications.css';
 
-const certifications = [
-    {
-        title: 'SQL Database Certification',
-        issuer: 'Certified Professional',
-        icon: <SiMysql />,
-        desc: 'Advanced database management, complex queries, optimization, and database design certified.',
-        color: '#f29111',
-    },
-    {
-        title: 'Shopify Expert Certification',
-        issuer: 'Shopify Partners',
-        icon: <SiShopify />,
-        desc: 'Professional Shopify store development, theme customization, and e-commerce solution expert.',
-        color: '#7ab55c',
-    },
-    {
-        title: 'Prompt Engineering Mastery',
-        issuer: 'AI Certification',
-        icon: <SiPython />,
-        desc: 'Advanced prompt crafting, AI communication optimization, and LLM interaction specialist.',
-        color: '#00f0ff',
-    },
-    {
-        title: 'Full Stack Development',
-        issuer: 'Professional Developer',
-        icon: <FaAward />,
-        desc: 'Comprehensive full stack development with React, Node.js, Python Flask, and Django.',
-        color: '#ff00e6',
-    },
-];
+const API_BASE = 'https://moiz.pythonanywhere.com';
+
+const certIconMap = {
+    SiMysql: <SiMysql />,
+    SiShopify: <SiShopify />,
+    SiPython: <SiPython />,
+    FaAward: <FaAward />,
+};
 
 const Certifications = () => {
+    const [certifications, setCertifications] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        fetch(`${API_BASE}/api/certifications`)
+            .then((res) => res.json())
+            .then((data) => {
+                setCertifications(data.certifications);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError(err.message);
+                setLoading(false);
+            });
+    }, []);
+
+    if (loading) return <section className="section certs-section"><div className="container"><p style={{ textAlign: 'center', color: '#fff' }}>Loading certifications...</p></div></section>;
+    if (error) return <section className="section certs-section"><div className="container"><p style={{ textAlign: 'center', color: '#ff6b6b' }}>Failed to load certifications: {error}</p></div></section>;
+
     return (
         <section className="section certs-section">
             <div className="container">
@@ -60,7 +58,7 @@ const Certifications = () => {
                             transition={{ delay: i * 0.15, duration: 0.5 }}
                         >
                             <div className="cert-icon" style={{ color: cert.color }}>
-                                {cert.icon}
+                                {certIconMap[cert.icon] || <FaCertificate />}
                             </div>
                             <div className="cert-badge">
                                 <FaCertificate />

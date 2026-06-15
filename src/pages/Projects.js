@@ -1,49 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiExternalLink, FiGithub } from 'react-icons/fi';
 import { FaReact, FaPython, FaNodeJs, FaDatabase, FaRobot } from 'react-icons/fa';
 import './Projects.css';
 
-const projects = [
-    {
-        title: 'Bank Management System',
-        desc: 'Real-time banking system with account management, transactions, and secure authentication built with Python Flask.',
-        icon: <FaDatabase />,
-        tags: ['Python', 'Flask', 'SQL', 'Real-time'],
-    },
-    {
-        title: 'Restaurant Management System',
-        desc: 'Complete restaurant management solution with order tracking, inventory, billing, and customer management.',
-        icon: <FaNodeJs />,
-        tags: ['Node.js', 'React', 'MongoDB', 'Full Stack'],
-    },
-    {
-        title: 'Subscription Based System',
-        desc: 'Scalable subscription platform with recurring billing, user tiers, payment integration, and analytics dashboard.',
-        icon: <FaReact />,
-        tags: ['React', 'Node.js', 'Stripe', 'API'],
-    },
-    {
-        title: 'AI Chatbot',
-        desc: 'Intelligent conversational AI chatbot with natural language processing, context awareness, and multi-platform support.',
-        icon: <FaRobot />,
-        tags: ['Python', 'AI', 'NLP', 'Flask'],
-    },
-    {
-        title: 'E-Commerce Platform',
-        desc: 'Full-featured e-commerce platform with product management, cart system, and secure checkout.',
-        icon: <FaPython />,
-        tags: ['Django', 'Python', 'SQL', 'Stripe'],
-    },
-    {
-        title: 'Data Analytics Dashboard',
-        desc: 'Interactive data visualization dashboard using Pandas and React for real-time business intelligence.',
-        icon: <FaReact />,
-        tags: ['Pandas', 'React', 'Python', 'Charts'],
-    },
-];
+const API_BASE = 'https://moiz.pythonanywhere.com';
+
+const iconMap = {
+    FaDatabase: <FaDatabase />,
+    FaNodeJs: <FaNodeJs />,
+    FaReact: <FaReact />,
+    FaRobot: <FaRobot />,
+    FaPython: <FaPython />,
+};
 
 const Projects = () => {
+    const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        fetch(`${API_BASE}/api/projects`)
+            .then((res) => res.json())
+            .then((data) => {
+                setProjects(data.projects);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError(err.message);
+                setLoading(false);
+            });
+    }, []);
+
+    if (loading) return <section className="section projects-section"><div className="container"><p style={{ textAlign: 'center', color: '#fff' }}>Loading projects...</p></div></section>;
+    if (error) return <section className="section projects-section"><div className="container"><p style={{ textAlign: 'center', color: '#ff6b6b' }}>Failed to load projects: {error}</p></div></section>;
+
     return (
         <section className="section projects-section">
             <div className="container">
@@ -67,7 +58,7 @@ const Projects = () => {
                             viewport={{ once: true }}
                             transition={{ delay: i * 0.1, duration: 0.5 }}
                         >
-                            <div className="project-icon">{project.icon}</div>
+                            <div className="project-icon">{iconMap[project.icon] || <FaReact />}</div>
                             <h3 className="project-title">{project.title}</h3>
                             <p className="project-desc">{project.desc}</p>
                             <div className="project-tags">

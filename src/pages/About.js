@@ -18,11 +18,13 @@ const About = () => {
 
     useEffect(() => {
         const quoteInterval = setInterval(() => {
-            let newIdx;
-            do {
-                newIdx = Math.floor(Math.random() * quotes.length);
-            } while (newIdx === quoteIndex);
-            setQuoteIndex(newIdx);
+            setQuoteIndex((prev) => {
+                let newIdx;
+                do {
+                    newIdx = Math.floor(Math.random() * quotes.length);
+                } while (newIdx === prev);
+                return newIdx;
+            });
         }, 10000);
 
         const hueInterval = setInterval(() => {
@@ -33,7 +35,7 @@ const About = () => {
             clearInterval(quoteInterval);
             clearInterval(hueInterval);
         };
-    }, [quoteIndex]);
+    }, []);
 
     const highlights = [
         { icon: <FiCode />, label: 'Full Stack Dev', desc: 'React, Node.js, Flask, Django' },

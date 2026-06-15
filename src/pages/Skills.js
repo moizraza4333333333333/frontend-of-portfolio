@@ -1,49 +1,48 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaPython, FaReact, FaNodeJs, FaPhp, FaHtml5, FaCss3Alt, FaJs, FaDatabase } from 'react-icons/fa';
 import { SiFlask, SiDjango, SiPandas, SiShopify, SiMysql } from 'react-icons/si';
 import './Skills.css';
 
-const skillCategories = [
-    {
-        title: 'Languages & Frameworks',
-        skills: [
-            { name: 'Python', icon: <FaPython />, level: 95 },
-            { name: 'Flask', icon: <SiFlask />, level: 90 },
-            { name: 'Django', icon: <SiDjango />, level: 85 },
-            { name: 'Node.js', icon: <FaNodeJs />, level: 80 },
-            { name: 'PHP', icon: <FaPhp />, level: 75 },
-        ],
-    },
-    {
-        title: 'Frontend & Design',
-        skills: [
-            { name: 'React', icon: <FaReact />, level: 90 },
-            { name: 'HTML5', icon: <FaHtml5 />, level: 95 },
-            { name: 'CSS3', icon: <FaCss3Alt />, level: 90 },
-            { name: 'JavaScript', icon: <FaJs />, level: 88 },
-        ],
-    },
-    {
-        title: 'Data & AI',
-        skills: [
-            { name: 'Pandas', icon: <SiPandas />, level: 85 },
-            { name: 'SQL', icon: <FaDatabase />, level: 80 },
-            { name: 'Prompt Eng.', icon: <FaPython />, level: 90 },
-            { name: 'AI/ML', icon: <FaPython />, level: 85 },
-        ],
-    },
-    {
-        title: 'Certifications',
-        skills: [
-            { name: 'SQL Certified', icon: <SiMysql />, level: 85 },
-            { name: 'Shopify Expert', icon: <SiShopify />, level: 80 },
-            { name: 'Prompt Eng.', icon: <FaPython />, level: 88 },
-        ],
-    },
-];
+const API_BASE = 'https://moiz.pythonanywhere.com';
+
+const skillIconMap = {
+    FaPython: <FaPython />,
+    FaReact: <FaReact />,
+    FaNodeJs: <FaNodeJs />,
+    FaPhp: <FaPhp />,
+    FaHtml5: <FaHtml5 />,
+    FaCss3Alt: <FaCss3Alt />,
+    FaJs: <FaJs />,
+    FaDatabase: <FaDatabase />,
+    SiFlask: <SiFlask />,
+    SiDjango: <SiDjango />,
+    SiPandas: <SiPandas />,
+    SiShopify: <SiShopify />,
+    SiMysql: <SiMysql />,
+};
 
 const Skills = () => {
+    const [skillCategories, setSkillCategories] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        fetch(`${API_BASE}/api/skills`)
+            .then((res) => res.json())
+            .then((data) => {
+                setSkillCategories(data.skills);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError(err.message);
+                setLoading(false);
+            });
+    }, []);
+
+    if (loading) return <section className="section skills-section"><div className="container"><p style={{ textAlign: 'center', color: '#fff' }}>Loading skills...</p></div></section>;
+    if (error) return <section className="section skills-section"><div className="container"><p style={{ textAlign: 'center', color: '#ff6b6b' }}>Failed to load skills: {error}</p></div></section>;
+
     return (
         <section className="section skills-section">
             <div className="container">
@@ -72,7 +71,7 @@ const Skills = () => {
                                 {cat.skills.map((skill, si) => (
                                     <div key={si} className="skill-item">
                                         <div className="skill-header">
-                                            <span className="skill-icon">{skill.icon}</span>
+                                            <span className="skill-icon">{skillIconMap[skill.icon] || <FaPython />}</span>
                                             <span className="skill-name">{skill.name}</span>
                                             <span className="skill-percent">{skill.level}%</span>
                                         </div>
