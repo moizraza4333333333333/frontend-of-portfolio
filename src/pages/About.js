@@ -70,10 +70,8 @@ const About = () => {
                             <span
                                 className="highlight"
                                 style={{
-                                    background: `linear-gradient(135deg, hsl(${hueShift}, 100%, 60%), hsl(${(hueShift + 60) % 360}, 100%, 60%))`,
-                                    WebkitBackgroundClip: 'text',
-                                    WebkitTextFillColor: 'transparent',
-                                    backgroundClip: 'text',
+                                    color: `hsl(${hueShift}, 100%, 60%)`,
+                                    transition: 'color 0.1s ease',
                                 }}
                             >
                                 Digital Reality
