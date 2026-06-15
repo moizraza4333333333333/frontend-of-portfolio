@@ -1,0 +1,40 @@
+.typing-animation {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+.typing-text {
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+}
+
+.typing-cursor {
+    color: var(--primary);
+    font-weight: 100;
+    font-size: 1.8rem;
+    margin-left: 2px;
+    animation: blink 0.8s step-end infinite;
+    text-shadow: 0 0 10px var(--primary);
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .typing-animation {
+        font-size: 1.1rem;
+    }
+
+    .typing-cursor {
+        font-size: 1.3rem;
+    }
+}
